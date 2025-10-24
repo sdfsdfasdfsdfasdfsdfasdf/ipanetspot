@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audens IPA File Archive</title>
+  <title>IPA Collection from Archive.org</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       background: #f4f4f4;
-      padding: 2rem;
+      margin: 2rem;
     }
     h1 {
       text-align: center;
     }
     ul {
-      list-style-type: none;
+      list-style: none;
       padding: 0;
       max-width: 600px;
       margin: 2rem auto;
-      background: white;
+      background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
@@ -26,46 +26,41 @@
       padding: 10px 15px;
       border-bottom: 1px solid #eee;
     }
-    li a {
-      text-decoration: none;
-      color: #007aff;
-    }
     li:last-child {
       border-bottom: none;
+    }
+    a {
+      text-decoration: none;
+      color: #007aff;
     }
   </style>
 </head>
 <body>
-  <h1>Audens IPA File Archive</h1>
-  <ul id="ipa-list">
-    <li>Loading...</li>
-  </ul>
+  <h1>IPA Collection (Archive.org)</h1>
+  <ul id="ipa-list"><li>Loading...</li></ul>
 
   <script>
-    // Replace "yourusername" and "yourrepo" with your actual GitHub details, yes i used AI SHAME ME!!!
-    const user = "sdfsdfasdfsdfasdfsdfasdf";
-    const repo = "ipanetspot";
-    const folder = "applications";
     const list = document.getElementById("ipa-list");
 
-    fetch(`https://api.github.com/repos/${user}/${repo}/contents/${folder}`)
+    fetch("https://archive.org/metadata/ipa-collection_202510")
       .then(res => res.json())
-      .then(files => {
+      .then(data => {
+        const files = data.files.filter(f => f.name.endsWith(".ipa"));
         list.innerHTML = "";
-        const ipas = files.filter(f => f.name.endsWith(".ipa"));
-        if (ipas.length === 0) {
+        if (files.length === 0) {
           list.innerHTML = "<li>No IPA files found.</li>";
           return;
         }
-        ipas.forEach(file => {
+        files.forEach(file => {
+          const url = `https://archive.org/download/ipa-collection_202510/${encodeURIComponent(file.name)}`;
           const li = document.createElement("li");
-          li.innerHTML = `<a href="${file.download_url}" target="_blank">${file.name}</a>`;
+          li.innerHTML = `<a href="${url}" target="_blank">${file.name}</a>`;
           list.appendChild(li);
         });
       })
       .catch(err => {
         console.error(err);
-        list.innerHTML = "<li>refresh plz :)</li>";
+        list.innerHTML = "<li>Error loading files.</li>";
       });
   </script>
 </body>
